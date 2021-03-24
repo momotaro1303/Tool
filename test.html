@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ja">
+<head>
+ <meta charset="UTF-8">
+ <title></title>
+ <link rel="stylesheet" href="style.css"/>
+ <script>
+ </script>
+</head>
+<div class="al-c">
+<form name="form_005">
+<div>英文整序問題作成</div>
+<div><textarea cols="80" rows="20" id="Input"></textarea></div>
+<div><input type="button" value="問題の生成" onclick="clickButton_001()">
+<input type="button" value="リセット" onclick="clickButton_004()"></div>
+<div>整序問題テキスト</div>
+<div><textarea cols="80" rows="20" id="Problem"></textarea></div>
+<div>解答例テキスト</div>
+<div><textarea cols="80" rows="20" id="Answer"></textarea></div>
+</form>
+
+<script>
+//修正点
+/*
+　テキストボックスの大きさ固定　配置を縦に
+　解答例　文頭　大文字に
+　?マーク
+　謎のスラッシュ
+*/
+function arrayShuffle(array) {
+  for(var i = (array.length - 1); 0 < i; i--){
+    // 0〜(i+1)の範囲で値を取得
+    var r = Math.floor(Math.random() * (i + 1));
+    // 要素の並び替えを実行
+    var tmp = array[i];
+    array[i] = array[r];
+    array[r] = tmp;
+  }
+  return array;
+}
+function clickButton_001(){
+    var text = document.form_005.Input.value;
+    var TEXT=text.replace('^','');
+    var userstring=TEXT.split("\n");
+    var retString = "";　　
+    for(var i=0 ; i<userstring.length; i++) {
+       var moji=userstring[i].split(" ");
+　　　　//文末が.かどうかチェック
+       let n1=moji.length-1;
+       let n2=moji[n1].length-1;
+　　　　let cc=moji[n1][n2];//文末の文字
+       for(var j=0; j<moji.length; j++){
+　　　　　 if(j==0) moji[0]=moji[0].slice(0,1).toUpperCase()+moji[0].slice(1) ;
+         moji[j]=moji[j].replace('-',' ');
+         moji[j]=moji[j].replace(cc,'');
+         if(moji[j][0]=='#') retString+="";
+         else if(j+1<moji.length&&moji[j+1][0]=='#') retString+=moji[j];
+         else if(j+1<moji.length) retString+=moji[j]+" ";
+         else retString+=moji[j];
+       }
+       retString += cc+"\n";
+    }
+    var PString = "";
+    var Ustring=text.split("\n");
+　　 for(var k=0 ; k<Ustring.length; k++) {
+       var array=Ustring[k].split(" ");
+       //文末が.かどうかチェック
+       let n1=array.length-1;
+       let n2=array[n1].length-1;
+　　　  let cc=array[n1][n2];//文末の文字
+       //','があるかどうかチェック
+       let flag=0;
+　　　　for(var j=0; j<array.length; j++){ 
+         var asize=array[j].length;
+         if(array[j][asize-1]==','){
+             array[j]=array[j].replace(',','');
+             flag=1;
+         }
+　　　　}
+       if(flag==1) array.push(',');
+       arrayShuffle(array);
+       for(var j=0; j<array.length; j++){ 
+       array[j]=array[j].replace(cc,'');
+       array[j]=array[j].replace('-',' ');
+         if(Ustring[k][0]!='・'){
+            if(array[j][0]=='#') array[j]=array[j].replace('#','');
+            if(array[j][0]=='^'){
+               if(j==array.length-1){
+　　　　　　　　　　PString -= " / ";
+                 PString += " )";
+　　　　　　　　　}
+               else if(j==0)  PString += "( ";
+               continue;
+            }
+            if(j==0) PString += "( "+array[j]+" / ";
+            else if(j==array.length-1) PString += array[j]+" )"; 
+            else PString += array[j]+" / ";
+         }
+         else PString += array[j];
+       }
+       PString += cc+"\n";
+    }
+    document.form_005.Answer.value=retString;
+    document.form_005.Problem.value=PString;
+}
+function clickButton_004(){
+    const number = document.form_005.Input.value;
+    document.form_005.Input.value = "";
+    document.form_005.Answer.value = "";
+　　 document.form_005.Problem.value = "";
+}
+</script>
+
+</body>
+</html>
+
